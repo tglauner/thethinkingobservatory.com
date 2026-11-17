@@ -8,3 +8,6 @@
 .learning-links { max-width: 1320px; margin: 32px auto; padding: 24px clamp(20px, 4vw, 56px); border-top: 1px solid #c8cdbd; font-size: .9rem; line-height: 1.9; }
 .learning-links p { margin: 8px 0; }
 .learning-links a { color: #294b3d; text-underline-offset: 3px; }
+
+.resource-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:12px 28px; padding:14px 20px; background:#e8ecdf; border-bottom:1px solid #c8cdbd; font-size:.85rem; }
+.resource-nav a { color:#294b3d; text-underline-offset:4px; }

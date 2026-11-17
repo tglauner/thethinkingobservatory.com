@@ -8,4 +8,4 @@
 - Local SKILL.md matches upstream byte for byte: SHA256 9190b68440ad99be4d865c63b87939f23a362efac0776c5a67c93d1498bb5e37.
 - Verified 2026-11-13. Earlier project notes that failed to identify Jane Street as the upstream source were incorrect.
 
-The website adapts the teaching approach to authored exercises; it is an independent implementation, not a Jane Street endorsement or an unmodified live AI tutor. This notice does not assign an MIT license to unrelated website assets or other dependencies.
+The website adapts this skill as runtime teaching guidance for an independent conversational tutor. Its original curriculum is reference material. This is not a Jane Street endorsement or a claim of actual interview-question provenance. This notice does not assign an MIT license to unrelated website assets or other dependencies.
