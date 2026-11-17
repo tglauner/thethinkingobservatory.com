@@ -1,0 +1,25 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["reply", "phase", "focus", "skills", "notes"],
+  "properties": {
+    "reply": {"type": "string"},
+    "phase": {"type": "string", "enum": ["diagnostic", "learning", "review", "assessment", "complete"]},
+    "focus": {"type": ["string", "null"]},
+    "skills": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "level", "evidence"],
+      "properties": {
+        "id": {"type": "string"}, "name": {"type": "string"}, "level": {"type": "integer"},
+        "evidence": {"anyOf": [{"type": "null"}, {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "correct", "note"],
+          "properties": {
+            "kind": {"type": "string", "enum": ["independent", "recall", "edge", "explanation", "assisted"]},
+            "correct": {"type": "boolean"}, "note": {"type": "string"}
+          }
+        }]}
+      }
+    }},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  }
+}

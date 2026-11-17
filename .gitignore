@@ -1,0 +1,33 @@
+# Private workspace material
+confidential/
+.env
+.env.*
+!.env.example
+
+# Dependencies and generated output
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+dist/
+output/
+test-results/
+playwright-report/
+.wrangler/
+.cf/
+.cloudflare/
+.dist-build-*/
+.DS_Store
+*.log
+
+# Generated documents and contained status artifacts
+docs/*.pdf
+docs/*.doc
+docs/*.docx
+docs/latex/build/
+status/*
+!status/README.md
+!status/status_slide.py
+
+# Browser automation working state
+.playwright-cli/
