@@ -43,3 +43,31 @@ test('incomplete model output is never applied', async () => assert.equal((await
 test('invalid teaching response is never applied', async () => assert.equal((await worker(async () => upstream({ ...lesson, reply: 'Two? Questions?' })).fetch(req(), env())).status, 502));
 test('network failure preserves session and returns retryable error', async () => assert.equal((await worker(async () => { throw Error('network'); }).fetch(req(), env())).status, 502));
 test('production build has server-only skill, domains, limits and no secret value', async () => { await buildWorker(); const result = await readBuildOutput(process.cwd()); const w = result.workers.default; assert.ok(w.bundleDir); assert.equal(w.config.assets.runWorkerFirst, true); assert.ok(w.config.domains.includes('thethinkingobservatory.com')); assert.equal(w.config.env.TUTOR_RATE.simple.limit, 6); assert.ok(!JSON.stringify(w.config).includes('test-only-secret')); });
+
+test('failure diagnostics contain safe stage and reason, never thrown content', async () => {
+ const logs = []; const w = worker(async () => { throw Error('test-only-secret private provider detail'); }, { info() {}, error(line) { logs.push(JSON.parse(line)); } });
+ assert.equal((await w.fetch(req(), env())).status, 502);
+ assert.equal(logs.at(-1).stage, 'provider-request');
+ assert.equal(logs.at(-1).reason, 'invalid-or-unavailable');
+ assert.ok(!JSON.stringify(logs).includes('test-only-secret'));
+});
+test('question-policy rejection is distinguishable without logging the reply', async () => {
+ const logs = []; const w = worker(async () => upstream({ ...lesson, reply: 'First? Second?' }), { info() {}, error(line) { logs.push(JSON.parse(line)); } });
+ assert.equal((await w.fetch(req(), env())).status, 502);
+ assert.equal(logs.at(-1).stage, 'session-validation');
+ assert.equal(logs.at(-1).reason, 'question-policy');
+ assert.ok(!JSON.stringify(logs).includes('First?'));
+});
+test('provider requests never follow redirects with API credentials', async () => {
+ const w = worker(async (url, options) => { assert.equal(options.redirect, 'manual'); return upstream(); });
+ assert.equal((await w.fetch(req(), env())).status, 200);
+});
+
+test('production preserves the existing credential binding without embedding a value', async () => {
+ const { TUTOR_WORKER_CONFIG } = await import('../scripts/worker-settings.mjs');
+ assert.deepEqual(TUTOR_WORKER_CONFIG.env.OPENAI_API_KEY, { type: 'unsafe:inherit' });
+});
+test('opening instructions request an actual diagnostic problem instead of readiness', async () => {
+ const { makeTutorPrompt } = await import('../server/tutor-core.js');
+ assert.match(makeTutorPrompt(input, skill), /topic-specific diagnostic problem immediately/);
+});

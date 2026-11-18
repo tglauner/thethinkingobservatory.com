@@ -24,7 +24,7 @@ npm run deploy
 
 This runs checks, builds the explicit browser allowlist plus separate server modules, and deploys Build Output using the pinned `cf` CLI. Authenticate with `npx cf auth login` if necessary. Cloudflare Worker: `jane-street-learning` (the existing identity is retained). Custom domains are declared in the source and production artifact.
 
-Set `OPENAI_API_KEY` as a **Secret** in this Worker’s Cloudflare dashboard → Settings → Variables and Secrets. Never enter it in chat, browser code, GitHub or a public environment variable. Existing code does not read credential files. Without this secret the site loads and clearly reports tutoring paused; no paid request is made. Adding the secret activates tutoring while `TUTOR_ENABLED=true`.
+Set `OPENAI_API_KEY` as a **Secret** in this Worker’s Cloudflare dashboard → Settings → Variables and Secrets. Never enter it in chat, browser code, GitHub or a public environment variable. Deployments inherit the existing key binding by name without reading its value. Set it before deploying a fresh Worker. Existing code does not read credential files. Without this secret the site loads and clearly reports tutoring paused; no paid request is made. Adding the secret activates tutoring while `TUTOR_ENABLED=true`.
 
 The environment settings are `OPENAI_MODEL=gpt-5-mini` and `TUTOR_ENABLED=true`. Set `TUTOR_ENABLED=false` in the dashboard to pause paid requests immediately. To persist that choice across future source deployments, change it in `scripts/worker-settings.mjs`, then deploy. Model changes should be verified for low-effort reasoning and structured-output compatibility before deployment.
 

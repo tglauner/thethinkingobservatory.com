@@ -63,10 +63,11 @@ export function createWorker({ skill, schema, fetchModel = fetch, logger = conso
       if (!site.success) return json(429, { error: 'The tutor is busy. Please try again in a minute.' });
     } catch { return json(503, { error: 'The tutor rate limiter is unavailable. Please try again later.' }); }
     const requestId = crypto.randomUUID().slice(0, 8);
+    let stage = 'provider-request';
     try {
       logger.info(JSON.stringify({ requestId, event: 'tutor-started' }));
       const upstream = await fetchModel('https://api.openai.com/v1/responses', {
-        method: 'POST', signal: AbortSignal.any([request.signal, AbortSignal.timeout(60_000)]),
+        method: 'POST', redirect: 'manual', signal: AbortSignal.any([request.signal, AbortSignal.timeout(60_000)]),
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.OPENAI_API_KEY}` },
         body: JSON.stringify({ model: env.OPENAI_MODEL || 'gpt-5-mini', store: false,
           instructions: prompt, input: 'Continue the tutoring session using the required JSON response schema.',
@@ -80,14 +81,26 @@ export function createWorker({ skill, schema, fetchModel = fetch, logger = conso
         logger.error(JSON.stringify({ requestId, event: 'provider-error', status: upstream.status }));
         return json(upstream.status === 429 ? 429 : 502, { error: upstream.status === 429 ? 'OpenAI usage is temporarily limited. Please try again later.' : 'The model provider could not answer. Your session is preserved; please retry.' });
       }
+      stage = 'provider-envelope';
       const result = JSON.parse(await boundedText(upstream.body, 120_000));
-      if (result.status !== 'completed') throw new Error('incomplete');
+      if (result.status !== 'completed') {
+        const reason = result.incomplete_details?.reason === 'max_output_tokens' ? 'output-limit' : 'incomplete';
+        logger.error(JSON.stringify({ requestId, event: 'provider-incomplete', reason }));
+        throw new Error(reason);
+      }
+      stage = 'model-json';
       const text = (result.output || []).filter(item => item.type === 'message').flatMap(item => item.content || []).filter(item => item.type === 'output_text').map(item => item.text).join('');
-      const session = applyTutorTurn(input, JSON.parse(text));
+      const turn = JSON.parse(text);
+      stage = 'session-validation';
+      const session = applyTutorTurn(input, turn);
       logger.info(JSON.stringify({ requestId, event: 'tutor-completed', phase: session.phase, usage: result.usage ? { input_tokens: result.usage.input_tokens, output_tokens: result.usage.output_tokens } : undefined }));
       return json(200, { session });
-    } catch {
-      logger.error(JSON.stringify({ requestId, event: 'tutor-failed' }));
+    } catch (error) {
+      // Log fixed categories only: provider payloads and learner text stay private.
+      const reason = /one question at a time/.test(error.message || '') ? 'question-policy'
+        : /skill map|unknown skill|skill level/.test(error.message || '') ? 'skill-map'
+        : ['TimeoutError', 'AbortError'].includes(error.name) ? 'timeout-or-cancelled' : 'invalid-or-unavailable';
+      logger.error(JSON.stringify({ requestId, event: 'tutor-failed', stage, reason }));
       return json(502, { error: 'The tutor could not complete this turn. Your session is preserved; please retry.' });
     }
   } };
