@@ -21,3 +21,25 @@
 .session-guide { padding:14px 20px; border-bottom:1px solid #c8cdbd; background:#f3f1e7; font-size:.8rem; line-height:1.7; }
 .session-guide p { margin:3px 0; }
 @media(max-width:700px) { .masthead > .skill-credit { order:0; flex-basis:100%; max-width:none; } }
+
+/* An editorial field notebook: richer arrival and focus, without score fireworks. */
+.conversation-shell { --exploration-accent:var(--rust); }
+.conversation-shell.phase-diagnostic { --exploration-accent:var(--olive); }
+.conversation-shell.phase-review { --exploration-accent:#887038; }
+.conversation-shell.phase-assessment,.conversation-shell.phase-complete { --exploration-accent:var(--forest); }
+.message.current-question { position:relative; margin:24px 0; padding:26px 28px 30px; border:1px solid #c4ccba; border-left:3px solid var(--exploration-accent); background:radial-gradient(ellipse at top right,#e1e8d7 0,transparent 65%),#f9f7ef; box-shadow:5px 5px 0 #e8e9dc; }
+.current-question .message-meta { color:var(--exploration-accent); }
+.current-question .speaker-mark { color:var(--light); background:var(--exploration-accent); }
+.current-question .message-text { font-family:var(--serif); font-size:25px; line-height:1.6; }
+.question-emblem { margin-left:auto; font-family:var(--serif); font-size:30px; font-weight:400; line-height:1; color:var(--exploration-accent); }
+.skill-item.current-skill { background:#f1f3e8; padding-inline:12px; border-left:2px solid var(--rust); }
+.evidence-trail { display:flex; gap:5px; margin-top:10px; }
+.evidence-trail:empty { display:none; }
+.evidence-trail i { width:6px; height:6px; background:var(--olive); border-radius:50%; }
+.skill-evidence { margin-top:6px; }
+.pending-mark { display:inline-block; animation:observatory-turn 6s linear infinite; }
+.current-question { animation:question-arrives .45s ease-out both; }
+@keyframes question-arrives { from { opacity:.45; transform:translateY(7px); } to { opacity:1; transform:translateY(0); } }
+@keyframes observatory-turn { to { transform:rotate(360deg); } }
+@media(max-width:650px) { .message.current-question { padding:21px 18px 24px; margin:20px 0; } .message.current-question .message-text { font-size:23px; } .question-emblem { font-size:25px; } }
+@media(prefers-reduced-motion:reduce) { .current-question,.pending-mark { animation:none; } }
