@@ -191,3 +191,5 @@ test('model evaluation receives conversation order without response timestamps',
  assert.match(prompt, /Never infer competence, effort, or credit from response speed/);
  assert.equal(JSON.stringify(state), before);
 });
+
+test('progress command reports the computed route instead of invented model progress',()=>{const state=session();const next=applyTutorTurn(request(state,'show progress'),result({reply:'You finished everything. Ready for more?'}),10);assert.match(next.messages.at(-1).text,/1 of 6 milestones complete; 5 remain/);assert.ok(!next.messages.at(-1).text.includes('finished everything'));assert.deepEqual(next.skills,state.skills)});

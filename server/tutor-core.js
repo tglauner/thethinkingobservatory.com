@@ -85,6 +85,10 @@ export function applyTutorTurn(request, result, now = Date.now()) {
   if (phase === 'assessment' && !targetMet) phase = 'learning';
   if (phase === 'complete' && !(targetMet && assessed && integrated && prior?.phase === 'assessment')) phase = targetMet ? 'assessment' : 'learning';
   let reply = result.reply.trim();
+  if (prior && message.toLowerCase() === 'show progress') {
+    const route = learningProgress(prior);
+    reply = `${route.done} of ${route.total} milestones complete; ${route.remaining} remain.\n\n${route.skills.map(s => `${s.name}: ${s.complete ? 'ready for final assessment' : s.steps.filter(step => !step.done).map(step => step.label).join('; ')}`).join('\n')}\n\nFinal assessment: ${route.assessment.filter(s => s.done).length} of ${route.assessment.length} checks passed. Use the learning map as the progress record. You can answer the previous question or select an unfinished skill to continue.`;
+  }
   if (phase !== 'complete' && (!reply.endsWith('?') || (reply.match(/\?/g) || []).length !== 1) && !command) throw new Error('The tutor must ask one question at a time. Your session is preserved; retry.');
   if (phase === 'assessment' && prior?.phase !== 'assessment') reply = `[Mixed assessment]\n${reply}`;
   const messages = [...(prior?.messages || [])];
