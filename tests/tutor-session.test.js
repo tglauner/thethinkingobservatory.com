@@ -176,3 +176,18 @@ test('a first-question direct explanation is usable before any substantive learn
   assert.equal(next.skills[0].evidence.at(-1).kind, 'assisted');
   assert.equal(next.skills[0].level, 0);
 });
+
+test('model evaluation receives conversation order without response timestamps', async () => {
+ const state = session({ createdAt: 1723456789012, updatedAt: 1723456799012,
+   messages: messagesWithAnswers(3).map(item => ({ ...item, at: 1723456799012 })) });
+ const before = JSON.stringify(state);
+ const prompt = await makeTutorPrompt(request(state));
+ assert.ok(!prompt.includes('1723456789012'));
+ assert.ok(!prompt.includes('1723456799012'));
+ assert.ok(!prompt.includes('"createdAt"'));
+ assert.ok(!prompt.includes('"updatedAt"'));
+ assert.ok(!prompt.includes('"at":'));
+ assert.ok(prompt.includes('Independent answer 1'));
+ assert.match(prompt, /Never infer competence, effort, or credit from response speed/);
+ assert.equal(JSON.stringify(state), before);
+});

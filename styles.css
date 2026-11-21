@@ -11,3 +11,13 @@
 
 .resource-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:12px 28px; padding:14px 20px; background:#e8ecdf; border-bottom:1px solid #c8cdbd; font-size:.85rem; }
 .resource-nav a { color:#294b3d; text-underline-offset:4px; }
+
+/* Header attribution sits between the brand and study-room navigation. */
+.masthead { gap:24px; flex-wrap:wrap; }
+.masthead > .skill-credit { flex:1 1 240px; max-width:360px; margin:0; padding:0; border:0; background:transparent; font-size:.75rem; line-height:1.5; }
+.masthead > .skill-credit p { margin:0; }
+.masthead > .skill-credit small { display:block; margin-top:4px; font-size:.68rem; }
+.skill-evidence { margin:8px 0 0; font-size:.73rem; line-height:1.6; color:#536451; }
+.session-guide { padding:14px 20px; border-bottom:1px solid #c8cdbd; background:#f3f1e7; font-size:.8rem; line-height:1.7; }
+.session-guide p { margin:3px 0; }
+@media(max-width:700px) { .masthead > .skill-credit { order:0; flex-basis:100%; max-width:none; } }

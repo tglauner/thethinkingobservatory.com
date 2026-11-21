@@ -41,3 +41,9 @@ curl https://thethinkingobservatory.com/api/tutor/status
 ```
 
 Check a new diagnostic, written answer, narrower follow-up, reload persistence, export/import, narrow layout and course links. In the Cloudflare Worker’s Deployments page, restore the preceding successful version to roll back a release. Domains and secrets are separate configuration: check them after rollback. Preserve the fixed quiz companion independently.
+
+## Session progress and backups
+
+Export downloads the conversation, skill map and notes as a private JSON backup; import restores it in another browser or after clearing local data. Response speed is not scored. Timestamps remain in the local backup for bookkeeping, but are excluded from the model’s session context; the model is instructed to evaluate reasoning only.
+
+A session starts with 3–5 diagnostic answers and then has no fixed lesson duration: it continues toward the selected goal and a mixed assessment, and can be paused at any time. The map shows recorded checks and independent successes separately from earned levels. The current evidence rule keeps a skill at0 until two independent successes include a later recall check; this can make early learning look stalled. Short study rounds and a clearer pedagogical stopping point remain a recommended product improvement, not an implemented session limit.
