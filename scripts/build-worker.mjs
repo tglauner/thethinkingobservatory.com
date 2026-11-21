@@ -6,7 +6,7 @@ import { TUTOR_WORKER_CONFIG } from './worker-settings.mjs';
 export async function buildWorker(root = process.cwd()) {
   await buildSite(root);
   const output = join(root, '.cloudflare/output/v0/workers/default');
-  const files = ['server/worker.mjs', 'server/tutor-core.js', 'src/tutor-state.js', 'src/curriculum.js'];
+  const files = ['server/worker.mjs', 'server/tutor-core.js', 'src/tutor-state.js', 'src/tutor-progress.js', 'src/curriculum.js'];
   const modules = { 'entrypoint.mjs': { type: 'esm' } };
   for (const path of files) {
     await mkdir(join(output, 'bundle', path, '..'), { recursive: true });

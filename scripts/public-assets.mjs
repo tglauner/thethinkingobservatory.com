@@ -8,6 +8,7 @@ export const PUBLIC_FILES = Object.freeze({
   'src/curriculum.js': 'src/curriculum.js',
   'src/engine.js': 'src/engine.js',
   'src/models.js': 'src/models.js',
+  'src/tutor-progress.js': 'src/tutor-progress.js',
   'src/tutor-state.js': 'src/tutor-state.js',
   'src/voice.js': 'src/voice.js',
   'mark.svg': 'public/mark.svg',
