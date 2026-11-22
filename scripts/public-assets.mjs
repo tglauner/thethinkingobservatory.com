@@ -3,6 +3,7 @@ import { resolve, join } from 'node:path';
 
 export const PUBLIC_FILES = Object.freeze({
   'index.html': 'index.html',
+  'analytics-consent.js': 'analytics-consent.js',
   'styles.css': 'styles.css',
   'app.js': 'app.js',
   'src/curriculum.js': 'src/curriculum.js',
